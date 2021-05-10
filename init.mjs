@@ -4,6 +4,9 @@ import fs from "fs";
 import { Octokit } from "octokit";
 
 const octokit = new Octokit({ auth: process.env.GH_TOKEN });
+const repoConfig = {
+  private: true,
+};
 
 let projectName = await question("Enter your project name : ");
 let currentDir = await $`pwd`;
@@ -18,6 +21,7 @@ if (fs.existsSync(cleanPath)) {
   await $`git init`;
   await octokit.request("POST /user/repos", {
     name: projectName,
+    ...repoConfig,
   });
   console.log(chalk.green("The project have been correctly initialize"));
 }
