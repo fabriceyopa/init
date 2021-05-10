@@ -5,9 +5,9 @@ import { Octokit } from "octokit";
 
 const octokit = new Octokit({ auth: process.env.GH_TOKEN });
 
-let username = await question("Enter your project name : ");
+let projectName = await question("Enter your project name : ");
 let currentDir = await $`pwd`;
-let fullPath = `${currentDir}/${slug(username)}`;
+let fullPath = `${currentDir}/${slug(projectName)}`;
 let cleanPath = fullPath.replace(/[\r\n]/g, "");
 console.log(chalk.blue(`We are initialising a new Git Project : ${cleanPath}`));
 if (fs.existsSync(cleanPath)) {
@@ -16,5 +16,8 @@ if (fs.existsSync(cleanPath)) {
   await $`mkdir -p ${cleanPath}`;
   cd(cleanPath);
   await $`git init`;
+  await octokit.request("POST /user/repos", {
+    name: projectName,
+  });
   console.log(chalk.green("The project have been correctly initialize"));
 }
